@@ -29,7 +29,7 @@ export default function SignUp() {
     try {
       await signUp.create({
         firstName: fullName.split(' ')[0],
-        lastName: fullName.split(' ')[0],
+        lastName: fullName.split(' ')[1],
         username:username,
         emailAddress: email,
         password,

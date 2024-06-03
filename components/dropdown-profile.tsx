@@ -1,5 +1,6 @@
 'use client'
 
+import { useClerk } from '@clerk/nextjs';
 import Link from 'next/link'
 import Image from 'next/image'
 import { Menu, Transition } from '@headlessui/react'
@@ -8,6 +9,17 @@ import UserAvatar from '@/public/images/user-avatar-32.png'
 export default function DropdownProfile({ align }: {
   align?: 'left' | 'right'
 }) {
+  const { signOut } = useClerk();
+  const handleSignOut = () => {
+    console.log("Sign out clicked");
+    signOut({ redirectUrl: '/' })
+      .then(() => {
+        console.log("Sign out successful");
+      })
+      .catch((error) => {
+        console.error("Sign out error:", error);
+      });
+  };
   return (
     <Menu as="div" className="relative inline-flex">
       <Menu.Button className="inline-flex justify-center items-center group">
@@ -43,9 +55,9 @@ export default function DropdownProfile({ align }: {
           </Menu.Item>
           <Menu.Item as="li">
             {({ active }) => (
-              <Link className={`font-medium text-sm flex items-center py-1 px-3 ${active ? 'text-indigo-600 dark:text-indigo-400' : 'text-indigo-500'}`} href="#0">
+              <button onClick={handleSignOut} className={`font-medium text-sm flex items-center py-1 px-3 ${active ? 'text-indigo-600 dark:text-indigo-400' : 'text-indigo-500'}`}>
                 Sign Out
-              </Link>
+              </button>
             )}
           </Menu.Item>
         </Menu.Items>
