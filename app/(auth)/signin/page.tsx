@@ -1,13 +1,41 @@
-export const metadata = {
-  title: 'Sign In - Mosaic',
-  description: 'Page description',
-}
+'use client';
 
+import * as React from 'react';
+import { useSignIn } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link'
 import AuthHeader from '../auth-header'
 import AuthImage from '../auth-image'
 
 export default function SignIn() {
+  const { isLoaded, signIn, setActive } = useSignIn();
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!isLoaded) {
+      return;
+    }
+
+    try {
+      const signInAttempt = await signIn.create({
+        identifier: email,
+        password,
+      });
+
+      if (signInAttempt.status === 'complete') {
+        await setActive({ session: signInAttempt.createdSessionId });
+        router.push('/');
+      } else {
+        console.error(JSON.stringify(signInAttempt, null, 2));
+      }
+    } catch (err: any) {
+      console.error(JSON.stringify(err, null, 2));
+    }
+  };
   return (
     <main className="bg-white dark:bg-slate-900">
 
@@ -22,22 +50,27 @@ export default function SignIn() {
             <div className="max-w-sm mx-auto w-full px-4 py-8">
               <h1 className="text-3xl text-slate-800 dark:text-slate-100 font-bold mb-6">Welcome back! ✨</h1>
               {/* Form */}
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-1" htmlFor="email">Email Address</label>
-                    <input id="email" className="form-input w-full" type="email" />
+                    <input id="email" value={email} onChange={(e)=>setEmail(e.target.value)} className="form-input w-full" type="email" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1" htmlFor="password">Password</label>
-                    <input id="password" className="form-input w-full" type="password" autoComplete="on" />
+                    <input id="password" value={password} onChange={(e)=>setPassword(e.target.value)} className="form-input w-full" type="password" autoComplete="on" />
                   </div>
                 </div>
                 <div className="flex items-center justify-between mt-6">
                   <div className="mr-1">
                     <Link className="text-sm underline hover:no-underline" href="/reset-password">Forgot Password?</Link>
                   </div>
-                  <Link className="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-3" href="/">Sign In</Link>
+                  <button
+                      type="submit"
+                      className="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-3 whitespace-nowrap"
+                    >
+                      Sign In
+                    </button>
                 </div>
               </form>
               {/* Footer */}
