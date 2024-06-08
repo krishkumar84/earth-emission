@@ -35,7 +35,7 @@ export default function Onboarding04() {
                     <path className="text-emerald-500 dark:text-emerald-400" d="m28.5 41-8-8 3-3 5 5 12-12 3 3z" />
                   </svg>
                   <h1 className="text-3xl text-slate-800 dark:text-slate-100 font-bold mb-8">Nice to have you, Acme Inc. 🙌</h1>
-                  <Link className="btn bg-indigo-500 hover:bg-indigo-600 text-white" href="/dashboards">Go To Dashboard -&gt;</Link>
+                  <Link className="btn bg-indigo-500 hover:bg-indigo-600 text-white" href="/dashboards">Sign up -&gt;</Link>
                 </div>
 
               </div>

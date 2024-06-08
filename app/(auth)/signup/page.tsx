@@ -17,6 +17,7 @@ export default function SignUp() {
   const [code, setCode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
+  
 
 
   const handleSignUp = async (e: any) => {
@@ -25,6 +26,13 @@ export default function SignUp() {
     if (!isLoaded) {
       return;
     }
+    const postalCode = localStorage.getItem('postalCode');
+    const street = localStorage.getItem('street');
+    const companyName = localStorage.getItem('companyName');
+    const onboardingSelection2 = localStorage.getItem('onboardingSelection2');
+    const onboardingSelection = localStorage.getItem('onboardingSelection');
+    const city = localStorage.getItem('city');
+    const country = localStorage.getItem('country');
 
     try {
       await signUp.create({
@@ -35,6 +43,13 @@ export default function SignUp() {
         password,
         unsafeMetadata: {
           role,
+          postalCode,
+          street,
+          companyName,
+          onboardingSelection2,
+          onboardingSelection,
+          city,
+          country,
         },
       });
 
@@ -63,6 +78,13 @@ export default function SignUp() {
       }
       if (completeSignUp.status === 'complete') {
         await setActive({ session: completeSignUp.createdSessionId });
+        localStorage.removeItem('postalCode');
+        localStorage.removeItem('street');
+        localStorage.removeItem('companyName');
+        localStorage.removeItem('onboardingSelection2');
+        localStorage.removeItem('onboardingSelection');
+        localStorage.removeItem('city');
+        localStorage.removeItem('country');
         router.push('/');
       }
     } catch (err) {
