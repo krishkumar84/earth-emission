@@ -12,7 +12,7 @@ export default function Onboarding03() {
   const [city, setCity] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [street, setStreet] = useState('');
-  const [country, setCountry] = useState('');
+  const [country, setCountry] = useState('USA');
 
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

@@ -11,6 +11,7 @@ export default function SignIn() {
   const { isLoaded, signIn, setActive } = useSignIn();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,8 +58,16 @@ export default function SignIn() {
                     <input id="email" value={email} onChange={(e)=>setEmail(e.target.value)} className="form-input w-full" type="email" />
                   </div>
                   <div>
+                  <div>
                     <label className="block text-sm font-medium mb-1" htmlFor="password">Password</label>
-                    <input id="password" value={password} onChange={(e)=>setPassword(e.target.value)} className="form-input w-full" type="password" autoComplete="on" />
+                    <div className="relative">
+                    <input id="password" value={password} onChange={(e)=>setPassword(e.target.value)} className="form-input w-full"  type={showPassword ? "text" : "password"} autoComplete="on" />
+                    <button  type="button"  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5" onClick={() => setShowPassword(!showPassword)}
+                     >
+                     {showPassword ? 'Hide' : 'Show'}
+                    </button>
+                  </div>
+                  </div>
                   </div>
                 </div>
                 <div className="flex items-center justify-between mt-6">

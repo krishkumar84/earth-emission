@@ -5,8 +5,10 @@ import OnboardingImage from '../onboarding-image'
 import OnboardingProgress from '../onboarding-progress'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function Onboarding01() {
+  const router = useRouter();
     const [selection, setSelection] = useState('company'); 
 
   const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,6 +19,7 @@ export default function Onboarding01() {
     e.preventDefault();
     localStorage.setItem('onboardingSelection1', selection);
     console.log(selection);
+    router.push('/onboarding-02');
   };
   return (
     <main className="bg-white dark:bg-slate-900">
@@ -77,9 +80,9 @@ export default function Onboarding01() {
                     </label>
                   </div>
                   <div className="flex items-center justify-between">
-                    <Link href={"/onboarding-02"}>
+                  
                     <button type='submit' className="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-auto" >Next Step -&gt;</button>
-                    </Link>
+                 
                   </div>
                 </form>
 

@@ -16,6 +16,7 @@ export default function SignUp() {
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   
 
@@ -180,23 +181,15 @@ export default function SignUp() {
                       </select>
                     </div>
                     <div>
-                      <label
-                        className="block text-sm font-medium mb-1"
-                        htmlFor="password"
-                      >
-                        Password
-                      </label>
-                      <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Password"
-                        required
-                        id="password"
-                        className="form-input w-full"
-                        autoComplete="on"
-                      />
-                    </div>
+                    <label className="block text-sm font-medium mb-1" htmlFor="password">Password</label>
+                    <div className="relative">
+                    <input id="password" value={password} onChange={(e)=>setPassword(e.target.value)} className="form-input w-full"  type={showPassword ? "text" : "password"} autoComplete="on" />
+                    <button  type="button"  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5" onClick={() => setShowPassword(!showPassword)}
+                     >
+                     {showPassword ? 'Hide' : 'Show'}
+                    </button>
+                  </div>
+                  </div>
                   </div>
                   {errorMessage && (
                     <div className="mt-4 text-red-600">

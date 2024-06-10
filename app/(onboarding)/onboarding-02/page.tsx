@@ -8,7 +8,7 @@ import { useState } from 'react'
 
 export default function Onboarding02() {
   const router = useRouter();
-  const [selection, setSelection] = useState('company'); 
+  const [selection, setSelection] = useState('individual'); 
 
   const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelection(e.target.value);

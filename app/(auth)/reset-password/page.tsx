@@ -109,26 +109,28 @@ export default function ResetPassword() {
                 )}
 
                 {successfulCreation && (
-                  <>
-                    <label htmlFor="password">Enter your new password</label>
+                  <div className="space-y-4">
+                    <label className="block text-sm font-medium mb-1" htmlFor="password">Enter your new password</label>
                     <input
                       type="password"
                       value={password}
+                      className="form-input w-full"
                       onChange={(e) => setPassword(e.target.value)}
                     />
 
-                    <label htmlFor="password">
+                    <label className="block text-sm font-medium mb-1" htmlFor="password">
                       Enter the password reset code that was sent to your email
                     </label>
                     <input
                       type="text"
                       value={code}
+                      className="form-input w-full"
                       onChange={(e) => setCode(e.target.value)}
                     />
 
-                    <button>Reset</button>
+                    <button className="btn bg-indigo-500 hover:bg-indigo-600 text-white  whitespace-nowrap">Reset</button>
                     {error && <p>{error}</p>}
-                  </>
+                  </div>
                 )}
 
                 {secondFactor && (
