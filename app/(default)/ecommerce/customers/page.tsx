@@ -1,7 +1,4 @@
-export const metadata = {
-  title: 'Customers - Mosaic',
-  description: 'Page description',
-}
+'use client'
 
 import { SelectedItemsProvider } from '@/app/selected-items-context'
 import DeleteButton from '@/components/delete-button'
@@ -20,6 +17,7 @@ import Image07 from '@/public/images/user-40-07.jpg'
 import Image08 from '@/public/images/user-40-08.jpg'
 import Image09 from '@/public/images/user-40-09.jpg'
 import Image10 from '@/public/images/user-40-10.jpg'
+import { useState } from 'react'
 
 function CustomersContent() {
 
@@ -146,6 +144,39 @@ function CustomersContent() {
       fav: false
     }
   ]
+  const [files, setFiles] = useState<File>();
+  const [uploading, setUploading] = useState(false);
+
+const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
+ e.preventDefault();
+  if (!files) {
+      return;
+  }
+
+  setUploading(true);
+
+  try {
+      const formData = new FormData();
+      console.log(formData)
+      formData.set('file', files);
+
+      const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+      });
+
+      if (!res.ok) {
+          throw new Error(`Network response was not ok`);
+      }
+
+      // const data = await response.json();
+      // console.log(data);
+  } catch (error) {
+      console.error('Error uploading files:', error);
+  } finally {
+      setUploading(false);
+  }
+};
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
@@ -156,7 +187,12 @@ function CustomersContent() {
         <div className="mb-4 sm:mb-0">
           <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">Customers ✨</h1>
         </div>
-
+        <form onSubmit={handleUpload}>
+            <input type="file" name='file' onChange={(e) => setFiles(e.target.files?.[0])}  disabled={uploading} />
+            <button type='submit' disabled={uploading}>
+                {uploading ? 'Uploading...' : 'Bulk Import'}
+            </button>
+        </form>
         {/* Right: Actions */}
         <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
 
