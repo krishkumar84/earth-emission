@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 
 export default function SignUp() {
   const { isLoaded, signUp, setActive } = useSignUp();
-  const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [fullName, setFullName] = useState('');
   const [password, setPassword] = useState('');
@@ -18,7 +17,23 @@ export default function SignUp() {
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-  
+  const [companyEmail, setCompanyEmail] = useState('');
+  const [isValidEmail, setIsValidEmail] = useState(true);
+
+  const validateEmail = (email:string) => {
+    const commonDomains = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com'];
+    const emailDomain = email.split('@')[1];
+    if (emailDomain) {
+      return !commonDomains.includes(emailDomain);
+    }
+    return true;
+  };
+
+  const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const email = (e.target as HTMLInputElement).value;
+    setCompanyEmail(email);
+    setIsValidEmail(validateEmail(email));
+  };
 
 
   const handleSignUp = async (e: any) => {
@@ -40,7 +55,7 @@ export default function SignUp() {
         firstName: fullName.split(' ')[0],
         lastName: fullName.split(' ')[1],
         username:username,
-        emailAddress: email,
+        emailAddress: companyEmail,
         password,
         unsafeMetadata: {
           role,
@@ -134,14 +149,17 @@ export default function SignUp() {
                         Email Address <span className="text-rose-500">*</span>
                       </label>
                       <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email"
-                        required
-                        id="email"
-                        className="form-input w-full"
+                       required
+                       id="company-email"
+                       value={companyEmail}
+                       onChange={handleChange}
+                       className={`form-input w-full ${isValidEmail ? '' : 'border-red-500'}`}
+                       type="email"
+                       placeholder='Company Email Address'
                       />
+                      {!isValidEmail && (
+                          <p className="text-red-500 text-sm mt-1">Please enter a valid company email address.</p>
+                        )}
                     </div>
                     <div>
                       <label
@@ -183,7 +201,7 @@ export default function SignUp() {
                     <div>
                     <label className="block text-sm font-medium mb-1" htmlFor="password">Password</label>
                     <div className="relative">
-                    <input id="password" value={password} onChange={(e)=>setPassword(e.target.value)} className="form-input w-full"  type={showPassword ? "text" : "password"} autoComplete="on" />
+                    <input id="password" placeholder='password' value={password} onChange={(e)=>setPassword(e.target.value)} className="form-input w-full"  type={showPassword ? "text" : "password"} autoComplete="on" />
                     <button  type="button"  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5" onClick={() => setShowPassword(!showPassword)}
                      >
                      {showPassword ? 'Hide' : 'Show'}

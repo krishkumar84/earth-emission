@@ -13,6 +13,23 @@ export default function Onboarding03() {
   const [postalCode, setPostalCode] = useState('');
   const [street, setStreet] = useState('');
   const [country, setCountry] = useState('USA');
+  const [companyEmail, setCompanyEmail] = useState('');
+  const [isValidEmail, setIsValidEmail] = useState(true);
+
+  const validateEmail = (email:string) => {
+    const commonDomains = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com'];
+    const emailDomain = email.split('@')[1];
+    if (emailDomain) {
+      return !commonDomains.includes(emailDomain);
+    }
+    return true;
+  };
+
+  const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const email = (e.target as HTMLInputElement).value;
+    setCompanyEmail(email);
+    setIsValidEmail(validateEmail(email));
+  };
 
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -52,23 +69,30 @@ export default function Onboarding03() {
                     {/* Company Name */}
                     <div>
                       <label className="block text-sm font-medium mb-1" htmlFor="company-name">Company Name <span className="text-rose-500">*</span></label>
-                      <input id="company-name" onChange={(e)=>setCompanyName(e.target.value)}  className="form-input w-full" type="text" />
+                      <input required id="company-name" onChange={(e)=>setCompanyName(e.target.value)}  className="form-input w-full" type="text" />
                     </div>
+                    {/* Company Mail Address */}
+                    <div>
+                      <label className="block text-sm font-medium mb-1" htmlFor="company-name">Company Email <span className="text-rose-500">*</span></label>
+                      <input required id="company-email" value={companyEmail} onChange={handleChange} className={`form-input w-full ${isValidEmail ? '' : 'border-red-500'}`} type="email"/>
+                    {!isValidEmail && (
+                       <p className="text-red-500 text-sm mt-1">Please enter a valid company email address.</p>
+                     )} </div>
                     {/* City and Postal Code */}
                     <div className="flex space-x-4">
                       <div className="flex-1">
                         <label className="block text-sm font-medium mb-1" htmlFor="city">City <span className="text-rose-500">*</span></label>
-                        <input id="city" onChange={(e)=>setCity(e.target.value)} className="form-input w-full" type="text" />
+                        <input required id="city" onChange={(e)=>setCity(e.target.value)} className="form-input w-full" type="text" />
                       </div>
                       <div className="flex-1">
                         <label className="block text-sm font-medium mb-1" htmlFor="postal-code">Postal Code <span className="text-rose-500">*</span></label>
-                        <input id="postal-code" onChange={(e)=>setPostalCode(e.target.value)} className="form-input w-full" type="text" />
+                        <input required id="postal-code" onChange={(e)=>setPostalCode(e.target.value)} className="form-input w-full" type="text" />
                       </div>
                     </div>
                     {/* Street Address */}
                     <div>
                       <label className="block text-sm font-medium mb-1" htmlFor="street">Street Address <span className="text-rose-500">*</span></label>
-                      <input id="street" onChange={(e)=>setStreet(e.target.value)} className="form-input w-full" type="text" />
+                      <input required id="street" onChange={(e)=>setStreet(e.target.value)} className="form-input w-full" type="text" />
                     </div>
                     {/* Country */}
                     <div>

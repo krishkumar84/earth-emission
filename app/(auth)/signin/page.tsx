@@ -1,18 +1,38 @@
 'use client';
-
+import { useState } from 'react';
 import * as React from 'react';
 import { useSignIn } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link'
 import AuthHeader from '../auth-header'
 import AuthImage from '../auth-image'
+import Toast02 from '../../../components/toast-02';
 
 export default function SignIn() {
   const { isLoaded, signIn, setActive } = useSignIn();
-  const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false);
+  const [toastOpen, setToastOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
+  const [companyEmail, setCompanyEmail] = useState('');
+  const [isValidEmail, setIsValidEmail] = useState(true);
+
+  const validateEmail = (email:string) => {
+    const commonDomains = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com'];
+    const emailDomain = email.split('@')[1];
+    if (emailDomain) {
+      return !commonDomains.includes(emailDomain);
+    }
+    return true;
+  };
+
+  const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const email = (e.target as HTMLInputElement).value;
+    setCompanyEmail(email);
+    setIsValidEmail(validateEmail(email));
+  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +43,7 @@ export default function SignIn() {
 
     try {
       const signInAttempt = await signIn.create({
-        identifier: email,
+        identifier: companyEmail,
         password,
       });
 
@@ -31,9 +51,18 @@ export default function SignIn() {
         await setActive({ session: signInAttempt.createdSessionId });
         router.push('/');
       } else {
+        setErrorMessage('Invalid email or password');
+      setToastOpen(true);
         console.error(JSON.stringify(signInAttempt, null, 2));
       }
     } catch (err: any) {
+      let errorMsg = 'Invalid email or password'; 
+      if (err && err.errors && Array.isArray(err.errors) && err.errors.length > 0) {
+        errorMsg = err.errors[0].message || errorMsg;
+      }
+
+      setErrorMessage(errorMsg)
+      setToastOpen(true);
       console.error(JSON.stringify(err, null, 2));
     }
   };
@@ -55,13 +84,16 @@ export default function SignIn() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-1" htmlFor="email">Email Address</label>
-                    <input id="email" value={email} onChange={(e)=>setEmail(e.target.value)} className="form-input w-full" type="email" />
+                    <input  required id="company-email" value={companyEmail} onChange={handleChange} className={`form-input w-full ${isValidEmail ? '' : 'border-red-500'}`} type="email" placeholder='Company Email Address' />
+                    {!isValidEmail && (
+                          <p className="text-red-500 text-sm mt-1">Please enter a valid company email address.</p>
+                        )}
                   </div>
                   <div>
                   <div>
                     <label className="block text-sm font-medium mb-1" htmlFor="password">Password</label>
                     <div className="relative">
-                    <input id="password" value={password} onChange={(e)=>setPassword(e.target.value)} className="form-input w-full"  type={showPassword ? "text" : "password"} autoComplete="on" />
+                    <input id="password" value={password} onChange={(e)=>setPassword(e.target.value)} className="form-input w-full"  type={showPassword ? "text" : "password"} placeholder='password' autoComplete="on" />
                     <button  type="button"  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5" onClick={() => setShowPassword(!showPassword)}
                      >
                      {showPassword ? 'Hide' : 'Show'}
@@ -81,6 +113,9 @@ export default function SignIn() {
                       Sign In
                     </button>
                 </div>
+                <div className="pt-2">
+              <Toast02 type="error" open={toastOpen} setOpen={setToastOpen}> {errorMessage} </Toast02>
+              </div>
               </form>
               {/* Footer */}
               <div className="pt-5 mt-6 border-t border-slate-200 dark:border-slate-700">
