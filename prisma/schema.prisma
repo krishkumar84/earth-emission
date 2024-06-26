@@ -13,7 +13,7 @@ model Order {
   email      String
   location   String
   orders     String
-  last_order String
-  total_spent String
+  lastOrder String
+  spent     String
   refunds    String
 }

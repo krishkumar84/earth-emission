@@ -6,146 +6,55 @@ import DateSelect from '@/components/date-select'
 import FilterButton from '@/components/dropdown-filter'
 import CustomersTable from './customers-table'
 import PaginationClassic from '@/components/pagination-classic'
-
-import Image01 from '@/public/images/user-40-01.jpg'
-import Image02 from '@/public/images/user-40-02.jpg'
-import Image03 from '@/public/images/user-40-03.jpg'
-import Image04 from '@/public/images/user-40-04.jpg'
-import Image05 from '@/public/images/user-40-05.jpg'
-import Image06 from '@/public/images/user-40-06.jpg'
-import Image07 from '@/public/images/user-40-07.jpg'
-import Image08 from '@/public/images/user-40-08.jpg'
-import Image09 from '@/public/images/user-40-09.jpg'
-import Image10 from '@/public/images/user-40-10.jpg'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+import Toast02 from '../../../../components/toast-02';
 
 function CustomersContent() {
+  const [loading, setLoading] = useState(false);
+  const [trigger, setTrigger] = useState(false);
+  const [customers, setCustomers] = useState([]);
+  const [toastOpen, setToastOpen] = useState(false);
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/fetch');
+        if (!res.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await res.json();
+        console.log(data)
+        setCustomers(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching customer data:', error);
+      }
+    };
 
-  // Some dummy customers data
-  const customers = [
-    {
-      id: 0,
-      image: Image01,
-      name: 'Patricia Semklo',
-      email: 'patricia.semklo@app.com',
-      location: '🇬🇧 London, UK',
-      orders: '24',
-      lastOrder: '#123567',
-      spent: '$2,890.66',
-      refunds: '-',
-      fav: true
-    },
-    {
-      id: 1,
-      image: Image02,
-      name: 'Dominik Lamakani',
-      email: 'dominik.lamakani@gmail.com',
-      location: '🇩🇪 Dortmund, DE',
-      orders: '77',
-      lastOrder: '#779912',
-      spent: '$14,767.04',
-      refunds: '4',
-      fav: false
-    },
-    {
-      id: 2,
-      image: Image03,
-      name: 'Ivan Mesaros',
-      email: 'imivanmes@gmail.com',
-      location: '🇫🇷 Paris, FR',
-      orders: '44',
-      lastOrder: '#889924',
-      spent: '$4,996.00',
-      refunds: '1',
-      fav: true
-    },
-    {
-      id: 3,
-      image: Image04,
-      name: 'Maria Martinez',
-      email: 'martinezhome@gmail.com',
-      location: '🇮🇹 Bologna, IT',
-      orders: '29',
-      lastOrder: '#897726',
-      spent: '$3,220.66',
-      refunds: '2',
-      fav: false
-    },
-    {
-      id: 4,
-      image: Image05,
-      name: 'Vicky Jung',
-      email: 'itsvicky@contact.com',
-      location: '🇬🇧 London, UK',
-      orders: '22',
-      lastOrder: '#123567',
-      spent: '$2,890.66',
-      refunds: '-',
-      fav: true
-    },
-    {
-      id: 5,
-      image: Image06,
-      name: 'Tisho Yanchev',
-      email: 'tisho.y@kurlytech.com',
-      location: '🇬🇧 London, UK',
-      orders: '14',
-      lastOrder: '#896644',
-      spent: '$1,649.99',
-      refunds: '1',
-      fav: true
-    },
-    {
-      id: 6,
-      image: Image07,
-      name: 'James Cameron',
-      email: 'james.ceo@james.tech',
-      location: '🇫🇷 Marseille, FR',
-      orders: '34',
-      lastOrder: '#136988',
-      spent: '$3,569.87',
-      refunds: '2',
-      fav: true
-    },
-    {
-      id: 7,
-      image: Image08,
-      name: 'Haruki Masuno',
-      email: 'haruki@supermail.jp',
-      location: '🇯🇵 Tokio, JP',
-      orders: '112',
-      lastOrder: '#442206',
-      spent: '$19,246.07',
-      refunds: '6',
-      fav: false
-    },
-    {
-      id: 8,
-      image: Image09,
-      name: 'Joe Huang',
-      email: 'joehuang@hotmail.com',
-      location: '🇨🇳 Shanghai, CN',
-      orders: '64',
-      lastOrder: '#764321',
-      spent: '$12,276.92',
-      refunds: '-',
-      fav: true
-    },
-    {
-      id: 9,
-      image: Image10,
-      name: 'Carolyn McNeail',
-      email: 'carolynlove@gmail.com',
-      location: '🇮🇹 Milan, IT',
-      orders: '19',
-      lastOrder: '#908764',
-      spent: '$1,289.97',
-      refunds: '2',
-      fav: false
-    }
-  ]
-  const [files, setFiles] = useState<File>();
+    fetchCustomers();
+  }, [trigger]);
+
+  console.log(customers)
+
+  const [files, setFiles] = useState<File| null>(null);
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.type !== 'text/csv') {
+        setError('Please upload a CSV file.');
+        setFiles(null);
+        setToastOpen(true);
+      } else {
+        setError(null);
+        setFiles(file);
+      }
+    }
+  };
 
 const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
  e.preventDefault();
@@ -154,6 +63,7 @@ const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
   }
 
   setUploading(true);
+  setTrigger(!trigger);
 
   try {
       const formData = new FormData();
@@ -165,6 +75,7 @@ const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
           body: formData
       });
 
+      setLoading(true);
       if (!res.ok) {
           throw new Error(`Network response was not ok`);
       }
@@ -180,22 +91,51 @@ const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
       {/* Page header */}
       <div className="sm:flex sm:justify-between sm:items-center mb-8">
-
         {/* Left: Title */}
         <div className="mb-4 sm:mb-0">
-          <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">Customers ✨</h1>
+          <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">
+            Customers ✨
+          </h1>
         </div>
-        <form onSubmit={handleUpload}>
-            <input type="file" name='file' onChange={(e) => setFiles(e.target.files?.[0])}  disabled={uploading} />
-            <button type='submit' disabled={uploading}>
-                {uploading ? 'Uploading...' : 'Bulk Import'}
-            </button>
+        <form onSubmit={handleUpload} className="flex items-center space-x-2">
+          <div className="flex items-center bg-indigo-500  rounded-md">
+            <label
+              htmlFor="file-upload"
+              className="btn bg-gray-500 hover:bg-indigo-600 text-white cursor-pointer"
+            >
+              <span>{uploading ? "Uploading..." : "Select File"}</span>
+              <input
+                id="file-upload"
+                type="file"
+                name="file"
+                onChange={handleFileChange}
+                disabled={uploading}
+                className="hidden"
+              />
+            </label>
+            {files && <span className="ml-2 text-white">{files.name}</span>}
+          </div>
+          <button
+            type="submit"
+            disabled={uploading}
+            className="btn bg-indigo-500 hover:bg-indigo-600 text-white"
+          >
+            {uploading ? "Uploading..." : "Bulk Import"}
+          </button>
+          <a
+            href="/random_data.csv"
+            download
+            className="btn bg-indigo-500 hover:bg-indigo-600 text-white p-2 rounded-md ml-2"
+            >
+            Download Template
+          </a>
         </form>
+
         {/* Right: Actions */}
         <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-
           {/* Delete button */}
           <DeleteButton />
 
@@ -207,25 +147,45 @@ const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
 
           {/* Add customer button */}
           <button className="btn bg-indigo-500 hover:bg-indigo-600 text-white">
-            <svg className="w-4 h-4 fill-current opacity-50 shrink-0" viewBox="0 0 16 16">
+            <svg
+              className="w-4 h-4 fill-current opacity-50 shrink-0"
+              viewBox="0 0 16 16"
+              >
               <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
             </svg>
             <span className="hidden xs:block ml-2">Add Customer</span>
           </button>
-
         </div>
 
       </div>
-
-      {/* Table */}
-      <CustomersTable customers={customers} />
+        <Toast02 type="error" open={toastOpen} setOpen={setToastOpen}> {error} </Toast02>
+      {loading ? (
+        <SkeletonTheme baseColor="#2d3748" highlightColor="#4a5568">
+          <div className="space-y-4">
+            {[...Array(10)].map((_, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between p-4 bg-gray-800 rounded-lg shadow"
+              >
+                <Skeleton width={50} height={20} />
+                <Skeleton width={100} height={20} />
+                <Skeleton width={200} height={20} />
+                <Skeleton width={150} height={20} />
+                <Skeleton width={100} height={20} />
+              </div>
+            ))}
+          </div>
+        </SkeletonTheme>
+      ) : (
+        <CustomersTable customers={customers} />
+      )}
 
       {/* Pagination */}
       <div className="mt-8">
         <PaginationClassic />
-      </div>    
+      </div>
     </div>
-  )
+  );
 }
 
 export default function Customers() {

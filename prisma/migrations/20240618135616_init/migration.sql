@@ -5,8 +5,8 @@ CREATE TABLE `Order` (
     `email` VARCHAR(191) NOT NULL,
     `location` VARCHAR(191) NOT NULL,
     `orders` VARCHAR(55) NOT NULL,
-    `last_order` VARCHAR(56) NOT NULL,
-    `total_spent` VARCHAR(30) NOT NULL,
+    `lastOrder` VARCHAR(56) NOT NULL,
+    `spent` VARCHAR(30) NOT NULL,
     `refunds` VARCHAR(67) NOT NULL,
 
     PRIMARY KEY (`id`)

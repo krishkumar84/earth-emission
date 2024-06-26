@@ -35,8 +35,8 @@ export async function POST(request: NextRequest) {
       "email",
       "location",
       "orders",
-      "last_order",
-      "total_spent",
+      "lastOrder",
+      "spent",
       "refunds",
     ];
 
