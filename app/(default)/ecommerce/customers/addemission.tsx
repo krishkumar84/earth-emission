@@ -97,9 +97,10 @@ const Addemissions = () => {
                         className="w-full"
                         selectedKey={sector}
                         name='sectors'
-                        variant="bordered"
+                        variant="flat"
+                        style={{ outline: 'none', boxShadow: 'none', border: 'none' }}
                         value={sector}
-                        // onSelectionChange={(value) => setSector(value) as string}
+                        //onSelectionChange={(value) => setSector(value) as string}
                         isRequired
                         allowsCustomValue={true}
                         disabledKeys={['Materials and Manufacturing', 'Consumer Goods and Services', 'Health and Social Care', 'Refrigerants and Fugitive Gases', 'Waste','Education','Organizational Activities','Agriculture/Hunting/Forestry/Fishing','Equipment','Water', 'Restaurants and Accommodation','Buildings and Infrastructure', 'Insurance and Financial Services' ]}
@@ -121,9 +122,10 @@ const Addemissions = () => {
                         value={category_set}
                         // onSelectionChange={setCategory_set}
                         isRequired
-                        variant="bordered"
+                        variant="flat"
                         allowsCustomValue={true}
                         isDisabled={!sector?.length}
+                        style={{ outline: 'none', boxShadow: 'none', border: 'none' }}
                       >
                         {category_get && category_get.map((category) => (
                           <AutocompleteItem key={category.category} value={category.category}>
