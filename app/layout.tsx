@@ -1,9 +1,10 @@
 import './css/style.css'
 
 import { Inter } from 'next/font/google'
-import Theme from './theme-provider'
-import AppProvider from './app-provider'
+import Theme from '../../../EarthEmission/app/theme-provider'
+import AppProvider from '../../../EarthEmission/app/app-provider'
 import { ClerkProvider } from '@clerk/nextjs'
+import { Providers } from './providers'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -23,15 +24,18 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-    <html lang="en" suppressHydrationWarning>{/* suppressHydrationWarning: https://github.com/vercel/next.js/issues/44343 */}
-      <body className={`${inter.variable} font-inter antialiased bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400`}>
-        <Theme>
-          <AppProvider>
-            {children}
-          </AppProvider>
-        </Theme>
-      </body>
-    </html>
+      <html lang="en" suppressHydrationWarning>
+        {/* suppressHydrationWarning: https://github.com/vercel/next.js/issues/44343 */}
+        <body
+          className={`${inter.variable} font-inter antialiased bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400`}
+        >
+          <Theme>
+            <AppProvider>
+              <Providers>{children}</Providers>
+            </AppProvider>
+          </Theme>
+        </body>
+      </html>
     </ClerkProvider>
-  )
+  );
 }
