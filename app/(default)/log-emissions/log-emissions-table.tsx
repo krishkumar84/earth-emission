@@ -16,7 +16,7 @@ export interface co2Emission {
   userId: string
 }
 
-export default function Co2EmissionsTable({ co2emissions, count }: { count: 0, co2emissions: co2Emission[]}) {
+export default function Co2EmissionsTable({ co2emissions, count }: { count: number, co2emissions: co2Emission[]}) {
   const {
     selectedItems,
     isAllSelected,

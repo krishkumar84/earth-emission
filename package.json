@@ -30,7 +30,8 @@
     "react-flatpickr": "^3.10.13",
     "react-loading-skeleton": "^3.4.0",
     "react-tabs": "^6.0.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
