@@ -3,6 +3,7 @@ import csvtojson from "csvtojson";
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import * as XLSX from "xlsx";
+import { json } from "body-parser";
 
 
 const prisma = new PrismaClient();
@@ -28,7 +29,17 @@ async function sendDataToAPI(data: JsonRecord, metric: string, provider: string)
     },
   });
   //  console.log("hello",JSON.stringify(data))
-    console.log("response",response);
+  const jsonResponse = await response.json(); // Await the response.json() to get the data
+
+  try {
+    await prisma.emissionData.create({
+      data: jsonResponse,
+    });
+  } catch (error) {
+    console.log(error)
+    return NextResponse.json({ error: 'Failed to save data to database' }, { status: 500 });
+  }
+  console.log("Response data:", jsonResponse);
 }
 
 async function parseCSV(fileContent: string): Promise<JsonRecord[]> {

@@ -86,7 +86,7 @@ export async function POST(request: NextRequest, { params }: any) {
 
     // Return all collected results
     // console.log("Results:", results);
-    return NextResponse.json({ results });
+    return NextResponse.json( results );
 
   } catch (error: any) {
     console.error('Error:', error.message);

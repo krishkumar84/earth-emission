@@ -17,3 +17,26 @@ model Order {
   spent     String
   refunds    String
 }
+
+model EmissionData {
+  id                        Int      @id @default(autoincrement())
+  name                      String
+  sector                    String
+  category                  String
+  cloud_provider            String
+  year                      String
+  cpu_load                  String
+  region                    String
+  duration                  String
+  duration_unit             String
+  cpu_count                 String
+  co2e                      Float
+  co2e_unit                 String
+  co2e_calculation_method   String
+  co2e_calculation_origin   String
+  activity_data_value       Int
+  activity_data_unit        String
+  audit_trail               String
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+}
