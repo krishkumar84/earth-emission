@@ -19,6 +19,18 @@ interface JsonRecord {
   [key: string]: string;
 }
 
+async function sendDataToAPI(data: JsonRecord, metric: string, provider: string) {
+   const response = await fetch(`http://localhost:3000/api/compute/${provider}/${metric}`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  //  console.log("hello",JSON.stringify(data))
+    console.log("response",response);
+}
+
 async function parseCSV(fileContent: string): Promise<JsonRecord[]> {
   return csvtojson({
     noheader: false,
@@ -42,11 +54,11 @@ async function parseXLSX(fileBuffer: ArrayBuffer): Promise<{ [key: string]: Json
       headers.forEach((header, index) => {
         record[header] = row[index] !== undefined && row[index] !== null ? row[index].toString() : "";
       });
-    //   console.log(record)
+       console.log(record)
       return record;
     });
   });
-   console.log(data)
+   //console.log(data)
   return data;
 }
 
@@ -95,6 +107,7 @@ export async function POST(request: NextRequest) {
         if (!validateHeaders(headers, sheetName)) {
           return NextResponse.json({ error: `Invalid headers in sheet: ${sheetName}` }, { status: 400 });
         }
+        await sendDataToAPI(records, 'cpu', 'azure');
         // await prisma[sheetName].createMany({ data: records });
       }
     }
