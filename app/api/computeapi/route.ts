@@ -30,10 +30,18 @@ async function sendDataToAPI(data: JsonRecord, metric: string, provider: string)
   });
   //  console.log("hello",JSON.stringify(data))
   const jsonResponse = await response.json(); // Await the response.json() to get the data
-
+  
+  const flattenedData = jsonResponse.map((item: any) => {
+    const { activity_data, ...rest } = item;
+    return {
+      ...rest,
+      activity_data_value: activity_data.activity_value,
+      activity_data_unit: activity_data.activity_unit,
+    };
+  });
   try {
-    await prisma.emissionData.create({
-      data: jsonResponse,
+    await prisma.emissionData.createMany({
+      data: flattenedData,
     });
   } catch (error) {
     console.log(error)

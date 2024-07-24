@@ -15,7 +15,7 @@ import Toast02 from '../../../components/toast-02';
 function Co2EmissionsContent({ searchParams }: any) {
   const [loading, setLoading] = useState(false);
   const [trigger, setTrigger] = useState(false);
-  const [customers, setCustomers] = useState([]);
+  const [Logs, setLogs] = useState([]);
   const [toastOpen, setToastOpen] = useState(false);
   const [co2e_emissions, setCo2eEmissions] = useState([]);
   const [count, setCount] = useState(0);
@@ -28,23 +28,33 @@ function Co2EmissionsContent({ searchParams }: any) {
   const page = searchParams?.page || 1;
 
   useEffect(() => {
-    const fetchCustomers = async () => {
+    const fetchLogs = async () => {
       setLoading(true);
       try {
-        const res = await fetch('/api/fetch');
+        const res = await fetch('/api/fetchlog');
         if (!res.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await res.json();
         console.log(data)
-        setCustomers(data);
+        const mappedData = data.map((item:any) => ({
+          id: item.id,
+          Name: item.name,
+          sector: item.sector,
+          category: item.category,
+          region: item.region,
+          co2e_unit: item.co2e_unit,
+          year: parseInt(item.year),
+          co2e: item.co2e,
+        }));
+        setLogs(mappedData);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching customer data:', error);
       }
     };
 
-    fetchCustomers();
+    fetchLogs();
   }, [trigger]);
 
   useEffect(() => {
@@ -181,7 +191,7 @@ function Co2EmissionsContent({ searchParams }: any) {
           </div>
         </SkeletonTheme>
       ) : (
-        <Co2EmissionsTable co2emissions={co2e_emissions} count={count} />
+        <Co2EmissionsTable co2emissions={Logs} count={count} />
       )}
 
       {/* Table */}
